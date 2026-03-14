@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, 'fix/**']
+    branches: [main, Development, 'fix/**', 'agent-fix/**', 'healops/fix/**']
   pull_request:
-    branches: [main]
+    branches: [main, Development]
 
 jobs:
   backend-checks:

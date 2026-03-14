@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "healops/fix/**"
+      - "agent-fix/**"
 
 concurrency:
   group: healops-validation-${{ github.ref }}
