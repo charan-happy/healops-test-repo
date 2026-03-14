@@ -28,3 +28,4 @@ GitHub Actions workflow at `.github/workflows/ci.yml` runs:
 - ESLint
 - Unit tests (Jest)
 - Build verification
+
