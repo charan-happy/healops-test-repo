@@ -54,7 +54,7 @@ export class ItemsService {
       name: data.name,
       description: data.description,
       status: 'active',
-      createdAt: new Date().toISOString(),
+      createdAt: Date.now(),
     };
     this.items.push(item);
     return item;
