@@ -1,0 +1,58 @@
+name: HealOps Validation
+
+on:
+  push:
+    branches:
+      - "healops/fix/**"
+
+concurrency:
+  group: healops-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  notify-healops:
+    needs: [validate]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Notify HealOps of result
+        run: |
+          STATUS="success"
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
+            STATUS="failure"
+          fi
+          curl -X POST "${{ secrets.HEALOPS_PUBLIC_URL }}/v1/healops/webhooks/validation-complete" \
+            -H "Authorization: Bearer ${{ secrets.HEALOPS_WEBHOOK_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"branch\":\"${{ github.ref_name }}\",\"status\":\"$STATUS\",\"run_id\":\"${{ github.run_id }}\",\"conclusion\":\"$STATUS\",\"sha\":\"${{ github.sha }}\"}"
