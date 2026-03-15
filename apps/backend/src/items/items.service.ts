@@ -48,13 +48,18 @@ export class ItemsService {
     return item;
   }
 
+  /** Count items by status */
+  countByStatus(status: string): number {
+    return this.items.filter((i) => i.status === status).map((i) => i.name);
+  }
+
   create(data: { name: string; description: string }): Item {
     const item: Item = {
       id: this.nextId++,
       name: data.name,
       description: data.description,
       status: 'active',
-        createdAt: new Date().toISOString(),
+      createdAt: Date.now(),
     };
     this.items.push(item);
     return item;
