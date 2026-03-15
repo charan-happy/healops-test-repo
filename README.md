@@ -29,4 +29,4 @@ GitHub Actions workflow at `.github/workflows/ci.yml` runs:
 - Unit tests (Jest)
 - Build verification
 
-<!-- e2e-test: 2026-03-15T08:43:28Z -->
+<!-- e2e-test: 2026-03-15T08:47:23Z -->
